@@ -37,4 +37,11 @@
 * AWS Hesabımızda "S3 Bucket" oluşturuyoruz ve "S3 Bucket Name" kopyalıyoruz.
 * S3 Bucket Name kısmını Terraform kaynak kodumuzun içerisinde olduğu Github Secret kısmına kaydediyoruz.Buraya kaydetmemizin sebebi S3 Bucket servisini Terraform içerisinde kullanacağız  
 * AWS Hesabımızda ECR(Elastic Container Registry) içerisinde private bir repository oluşturuyoruz ve ECR URL'mizi kopyalıyoruz.
-* ECR URL'mizi Uygulama kaynak kodumuzun içerisinde olduğu Github Secret kısmına kaydediyoruz. 
+* ECR URL'mizi Uygulama kaynak kodumuzun içerisinde olduğu Github Secret kısmına kaydediyoruz.
+#### Şimdi ise Terraform kodlarımızın içerisine Girip VPC infrastructure ve EKS Cluster oluşturalım.
+* Terraform kaynak kodumuzun "iac-vprofile" klasörünü açıyoruz. VSCode uygulamasıyla açmamız gerekiyor.
+* terraform klasörü içerisindeki "variables.tf" dosyamızı açıyoruz. AWS hesabımızdaki region bilgisini ve terraform ile oluşturacağımız EKS Cluster adını "default" kısmında yazıyoruz.
+* Aynı şekilde terraform klasörü içerisindeki "terraform.tf" dosyamızı açıyoruz. "backend "s3"" içerisindeki "bucket" kısmına AWS Hesabımızda oluşturduğumuz S3 bucket name kısmını giriyoruz. AWS region bilgilerimizi de "region" kısmına giriyoruz. "key" kısmına dokunmuyoruz.
+* "vpc.tf" dosyamızı açıyoruz. "name" değerine EKS Cluster için belirlediğimiz ismi giriyoruz.
+* VSCode Source Control paneline gelip Projemizi "Commit & Push" seçeneğiyle Github'a push etmeliyiz.
+* Çıkan ekranda Commit mesajını yazıp "Save" seçeneğine basacağız.
