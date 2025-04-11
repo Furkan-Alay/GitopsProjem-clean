@@ -1,5 +1,5 @@
 # Projeme Hoşgeldiniz Aşağıdaki adımları takip ederek projeyi localinizde çalıştırabilirsiniz İyi çalışmalar.
-# "https://github.com/Furkan-Alay/GitopsProjem" ve "https://github.com/Furkan-Alay/GitopsProjem" buradaki resource kısmına gidip ayrı ayrı her ikisi için fork işlemini yapmanız gerekmektedir.
+# "https://github.com/Furkan-Alay/GitopsProjem" ve "https://github.com/Furkan-Alay/GitappProjem" buradaki resource kısmına gidip ayrı ayrı her ikisi için fork işlemini yapmanız gerekmektedir.
 # Daha sonra terminalinizi açıp SSH key oluşturmanız gerekmektedir. buradaki kodları sırayla terminale yazınız. 
 * cd
 * cd ~/.ssh
