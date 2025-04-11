@@ -1,5 +1,5 @@
 # Projeme Hoşgeldiniz Aşağıdaki adımları takip ederek projeyi localinizde çalıştırabilirsiniz İyi çalışmalar.
-# "https://github.com/Furkan-Alay/GitopsProjem" ve "https://github.com/Furkan-Alay/GitappProjem" buradaki resource kısmına gidip ayrı ayrı her ikisi için fork işlemini yapmanız gerekmektedir.
+# "https://github.com/Furkan-Alay/GitopsProjem" ve "https://github.com/Furkan-Alay/GitappProjem" buradaki resource kısmına gidip ayrı ayrı her ikisi için SSH linkinden fork işlemini yapmanız gerekmektedir.
 # Daha sonra terminalinizi açıp SSH key oluşturmanız gerekmektedir. buradaki kodları sırayla terminale yazınız. 
 * cd
 * cd ~/.ssh
@@ -27,10 +27,14 @@
 * cp -r iac-vprofile/ main-iac
 * cd iac-vprofile
 * git checkout stage
-### Steps
-* terraform init
-* terraform fmt -check
-* terraform validate
-* terraform plan -out planfile
-* terraform apply -auto-approve -input=false -parallelism=1 planfile
-####
+#### Şimdi ise Github Secrets adımlarımızı oluşturalım. Burada AWS ortamında oluşturduğumuz AWS Access Key,Secret Key,S3 Bucket ve ECR Repository bilgilerini Github Secret kısmına kaydedeceğiz.
+* Terraform ve Uygulama kodlarını fork etmiştik. Bu kaynak kodlarına giriyoruz ve "Secret and variables" kısmındaki "Actions" kısımlarına basıyoruz.
+* AWS hesabımıza giriyoruz ve projenin sonuna kadar kullanacağımız "Region" seçiyoruz.
+* "IAM" servisini açıp Create User kısmına basıyoruz. Bu kullanıcının "Administrator Access" yetkisine sahip olması gerekiyor çünkü AWS hesabında kaynak kullanacaktır.
+* IAM User kullanıcısı oluşturuyoruz. Bu kullanıcı için "Create Access Key" kısmına basıp "Access Key" ve "Secret Key" oluşturuyoruz.
+* Access Key ve Secret Key bilgilerini kopyalıyoruz.
+* Terraform kaynak kodumuzun ve Uygulama kısmına Github Secret kısmına bu bilgileri kaydediyoruz.
+* AWS Hesabımızda "S3 Bucket" oluşturuyoruz ve "S3 Bucket Name" kopyalıyoruz.
+* S3 Bucket Name kısmını Terraform kaynak kodumuzun içerisinde olduğu Github Secret kısmına kaydediyoruz.Buraya kaydetmemizin sebebi S3 Bucket servisini Terraform içerisinde kullanacağız  
+* AWS Hesabımızda ECR(Elastic Container Registry) içerisinde private bir repository oluşturuyoruz ve ECR URL'mizi kopyalıyoruz.
+* ECR URL'mizi Uygulama kaynak kodumuzun içerisinde olduğu Github Secret kısmına kaydediyoruz. 
