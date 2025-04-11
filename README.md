@@ -113,3 +113,5 @@ jobs:
 * Yukarıda yapıştırdığım kod içerisindeki "AWS_REGION" kısmına S3 Bucket ve ECR bölgemizi ekliyoruz.
 * VSCode Source Control kısmından Commit&Push seçeneğine tıklıyoruz ve Commit mesajını yazdıktan sonra Save basıyoruz.
 * Github Actions kısmında Pipeline adımlarının gerçekleştiğini görmüş olacağız. 
+#### Şimdi ise Terraform kodlarımızla VPC Altyapısını ve EKS Cluster yapısını oluşturalım
+* 
