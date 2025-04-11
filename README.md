@@ -45,3 +45,71 @@
 * "vpc.tf" dosyamızı açıyoruz. "name" değerine EKS Cluster için belirlediğimiz ismi giriyoruz.
 * VSCode Source Control paneline gelip Projemizi "Commit & Push" seçeneğiyle Github'a push etmeliyiz.
 * Çıkan ekranda Commit mesajını yazıp "Save" seçeneğine basacağız.
+#### Şimdi ise Terraform kodlarımızı Github Actions kısmında çalıştıralım.
+* Terraform kaynak kodumuzun "iac-vprofie" klasörünü VScode ile açtık.
+* ".github/workflows" adında bir klasör oluşturduk.Bu klasör içinde "terraform.yml" dosyası oluşturuyoruz.Bu dosya ile github actions içerisinde terraform kodlarımızı çalıştırmış olacağız.
+* Aşağıdaki kodları "terraform.yml" dosyamıza yapıştıralım
+* name: "Vprofile IAC"  
+on:
+  push:
+    branches:
+      - main
+      - stage
+    paths:  
+      - terraform/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - terraform/**
+
+env:
+ # Credentials for deployment to AWS
+ AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+ AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+ # S3 bucket for the Terraform state
+ BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}}
+ AWS_REGION: us-east-2
+ EKS_CLUSTER: vprofile-eks
+
+jobs:
+   terraform:
+     name: "Apply terraform code changes"
+     runs-on: ubuntu-latest
+     defaults:
+       run:
+         shell: bash
+         working-directory: ./terraform
+
+     steps:
+       - name: Checkout source code 
+         uses: actions/checkout@v4
+
+       - name: Setup Terraform with specified version on the runner
+         uses: hashicorp/setup-terraform@v2
+         with:
+           terraform_version: 1.6.3
+
+       - name: Terraform init
+         id: init
+         run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
+
+       - name: Terraform format
+         id: fmt
+         run: terraform fmt -check
+
+       - name: Terraform validate
+         id: validate
+         run: terraform validate
+
+       - name: Terraform plan
+         id: plan
+         run: terraform plan -no-color -input=false -out planfile
+         continue-on-error: true
+
+       - name: Terraform plan status
+         if: steps.plan.outcome == 'failure' 
+         run: exit 1
+* Yukarıda yapıştırdığım kod içerisindeki "AWS_REGION" kısmına S3 Bucket ve ECR bölgemizi ekliyoruz.
+* VSCode Source Control kısmından Commit&Push seçeneğine tıklıyoruz ve Commit mesajını yazdıktan sonra Save basıyoruz.
+* Github Actions kısmında Pipeline adımlarının gerçekleştiğini görmüş olacağız. 
