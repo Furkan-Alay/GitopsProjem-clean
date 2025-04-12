@@ -148,4 +148,68 @@ jobs:
 * git commit -m "Bu bir Duzeltme mesajıdır"
 * git merge stage
 #### Şimdi ise Uygulamamızın Workflow kısmına giriş yapalım. Burada Sonar Cloud oluşturacağız,Sonar token oluşturacağız ve Github Secret ayarlarını yapacağız.
+* https://sonarcloud.io/ sitesinden Github hesabımızdan bir sonarcloud hesabı oluşturuyoruz.
+* "Create new organization" basarak manuel olarak organizasyon oluşturmamız gerekiyor. "Free Plan" seçmek bizim için yeterli olacaktır. "Analyze a new project" basıyoruz."Display name" ve "Project Key" bilgilerini aynı giriyoruz. "Public" visibility seçiyoruz.
+* Sağ yukarıdan "My account" basıyoruz."Security" basıyoruz. Burada bir tane token oluşturuyoruz.Token oluşturduktan sonra çıkan şifreyi kopyalıyoruz.Github Secret kısmında yeni bir Secret oluşturuyoruz."Name" kısmına "SONAR_TOKEN" yazdıktan sonra Token şifremizi secret kısmına giriyoruz ve add basıyoruz.
+* Oluşturduğumuz Organizasyon ismini Secret kısmına giriyoruz ve name olarak "SONAR_ORGANIZATION" giriyoruz.
+* Yeni bir Secret açıyoruz ve name kısmına "SONAR_PROJECT_KEY" giriyoruz secret kısmına ise "Project_Key" bilgisimizi giriyoruz.
+* Son olarak yeni bir Github Secret oluşturuyoruz.Name kısmına "SONAR_URL" giriyoruz Secret kısmına ise "https://sonarcloud.io" giriyoruz. 
+* Fork ettiğimizi uygulama kaynak kodumuzu VScode ile açıyoruz.
+* ".github/workflows" adında bir klasör oluşturuyoruz ve bu klasörün içerisine "main.yml" dosyası oluşturuyoruz.Bu dosyamızın içerisin aşağıdaki kodları yazıyoruz:
+* name: vprofile actions
+on: workflow_dispatch
+env:
+  AWS_REGION: us-east-2
+  ECR_REPOSITORY: vprofileapp
+  EKS_CLUSTER: vprofile-eks
 
+jobs:
+  Testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v4
+
+      - name: Maven test
+        run: mvn test
+
+      - name: Checkstyle
+        run: mvn checkstyle:checkstyle
+
+      # Setup java 11 to be default (sonar-scanner requirement as of 5.x)
+      - name: Set Java 11
+        uses: actions/setup-java@v3
+        with:
+         distribution: 'temurin' # See 'Supported distributions' for available options
+         java-version: '11'
+
+      # Setup sonar-scanner
+      - name: Setup SonarQube
+        uses: warchant/setup-sonar-scanner@v7
+
+
+      # Run sonar-scanner
+      - name: SonarQube Scan
+        run: sonar-scanner
+           -Dsonar.host.url=${{ secrets.SONAR_URL }}
+           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+           -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+           -Dsonar.sources=src/
+           -Dsonar.junit.reportsPath=target/surefire-reports/ 
+           -Dsonar.jacoco.reportsPath=target/jacoco.exec 
+           -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
+           -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/  
+
+      # Check the Quality Gate status.
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+
+      # Force to fail step after specific time.
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_URL }} #OPTIONAL
+* VScode Source Control kısmından "Commit&Push" basıyoruz.
+* Uygulamamızın kaynak koduna geliyoruz.Actions kısmına geliyoruz."vprofile-actions" seçeneğine basıyoruz. "Run workflow" basıyoruz.İlk başta workflow hata verecektir.Tekrardan çalıştırıyoruz ve Test işlemi bitti.
