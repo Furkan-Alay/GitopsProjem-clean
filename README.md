@@ -64,10 +64,10 @@ on:
       - terraform/**
 
 env:
- # Credentials for deployment to AWS
+ ##### Credentials for deployment to AWS
  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
- # S3 bucket for the Terraform state
+ ##### S3 bucket for the Terraform state
  BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}}
  AWS_REGION: us-east-2
  EKS_CLUSTER: vprofile-eks
