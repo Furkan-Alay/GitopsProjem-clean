@@ -214,4 +214,29 @@ jobs:
 * VScode Source Control kısmından "Commit&Push" basıyoruz.
 * Uygulamamızın kaynak koduna geliyoruz.Actions kısmına geliyoruz."vprofile-actions" seçeneğine basıyoruz. "Run workflow" basıyoruz.İlk başta workflow hata verecektir.Tekrardan çalıştırıyoruz ve Test işlemi bitti.
 ### Şimdi ise Docker container Build ve Publish işlemini yapalım.
-* 
+* "main.yml" dosyamızın içerisine aşağıdaki kodları yapıştırıyoruz:
+*  BUILD_AND_PUBLISH:   
+    needs: Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v4
+
+      - name: Build & Upload image to ECR
+        uses: appleboy/docker-ecr-action@master
+        with:
+          access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          registry: ${{ secrets.REGISTRY }}
+          repo: ${{ env.ECR_REPOSITORY }}
+          region: ${{ env.AWS_REGION }}
+          tags: latest,${{ github.run_number }}
+          daemon_off: false
+          dockerfile: ./Dockerfile
+          context: ./
+
+* Buradaki kodları bozmadan "main.yml" dosyamızı içerisinde kodun yerlerini değiştirmeden yapıştırıyoruz.
+* VSCode Source Control kısmından "Commit&Push" işlemini gerçekleştiriyoruz.
+* Uygulamamızın kaynak kodunun "Actions" kısmına geliyoruz."vprofile-actions" kısmına bastık "Run workflow" bastık ve projemiz başarılı ile çalıştı.
+* AWS Hesabımızın ECR Registry kısmına gelip uygulamamıza bastığımızda docker image build & publish işleminin gerçekleştiğini görebiliriz.
+### Şimdi ise son kısım olan EKS Deploy bölümünü ayarlayacağız.
