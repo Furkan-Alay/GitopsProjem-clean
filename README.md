@@ -49,8 +49,8 @@
 * Terraform kaynak kodumuzun "iac-vprofie" klasörünü VScode ile açtık.
 * ".github/workflows" adında bir klasör oluşturduk.Bu klasör içinde "terraform.yml" dosyası oluşturuyoruz.Bu dosya ile github actions içerisinde terraform kodlarımızı çalıştırmış olacağız.
 * Aşağıdaki kodları "terraform.yml" dosyamıza yapıştıralım
-  name: "Vprofile IAC"  
-on:
+*name: "Vprofile IAC"  
+ on:
   push:
     branches:
       - main
