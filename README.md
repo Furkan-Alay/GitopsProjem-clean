@@ -114,4 +114,38 @@ jobs:
 * VSCode Source Control kısmından Commit&Push seçeneğine tıklıyoruz ve Commit mesajını yazdıktan sonra Save basıyoruz.
 * Github Actions kısmında Pipeline adımlarının gerçekleştiğini görmüş olacağız. 
 #### Şimdi ise Terraform kodlarımızla VPC Altyapısını ve EKS Cluster yapısını oluşturalım
-* 
+* terraform.yml dosyanızı açıp bu içeriği ekleyin:
+* - name: Terraform Apply
+         id: apple
+         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+         run: terraform apply -auto-approve -input=false -parallelism=1 planfile
+
+       - name: Configure AWS credentials
+         uses: aws-actions/configure-aws-credentials@v1
+         with:
+           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           aws-region: ${{ env.AWS_REGION }}
+     
+       - name: Get Kube config file
+         id: getconfig
+         if: steps.apple.outcome == 'success'
+         run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER }} 
+
+       - name: Install Ingress controller
+         if: steps.apple.outcome == 'success' && steps.getconfig.outcome == 'success'
+         run: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.3/deploy/static/provider/aws/deploy.yaml
+
+* Buradaki komutları VPC ve EKS Cluster oluşturacak olan son komutlarımızdır. Bu komutları bir önceki komutlarla birleştirmelisiniz.
+* terraform/ klasörümüze bir içerik ekledik ve Commit&Push işlemi yaptık.
+* Github Actions kısmında Workflow başlayacaktır ancak son eklediğimiz komutlar çalışmayacaktır.Çünkü "main" stage içerisinde push işlemi yapmadık.Projenin sonunda push işlemini gerçekleştireceğiz.
+* Terraform ve Uygulama kodumuzun olduğu klasörü terminalle açıyoruz.Aşağıdaki komutlarla merge işlemini gerçekleştirmiş olacağız:
+* cd iac-vprofile/
+* git checkout stage
+* git pull
+* git checkout main
+* git add .
+* git commit -m "Bu bir Duzeltme mesajıdır"
+* git merge stage
+#### Şimdi ise Uygulamamızın Workflow kısmına giriş yapalım. Burada Sonar Cloud oluşturacağız,Sonar token oluşturacağız ve Github Secret ayarlarını yapacağız.
+
