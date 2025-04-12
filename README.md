@@ -23,11 +23,11 @@
 * git config --global user.name devops541
 * git config --global user.email furkanalay428@gmail.com
 * cd ..
-#### Yeni bir klasör kopyaladık istediğiniz ismi burada verebilirsiniz.
+### Yeni bir klasör kopyaladık istediğiniz ismi burada verebilirsiniz.
 * cp -r iac-vprofile/ main-iac
 * cd iac-vprofile
 * git checkout stage
-#### Şimdi ise Github Secrets adımlarımızı oluşturalım. Burada AWS ortamında oluşturduğumuz AWS Access Key,Secret Key,S3 Bucket ve ECR Repository bilgilerini Github Secret kısmına kaydedeceğiz.
+### Şimdi ise Github Secrets adımlarımızı oluşturalım. Burada AWS ortamında oluşturduğumuz AWS Access Key,Secret Key,S3 Bucket ve ECR Repository bilgilerini Github Secret kısmına kaydedeceğiz.
 * Terraform ve Uygulama kodlarını fork etmiştik. Bu kaynak kodlarına giriyoruz ve "Secret and variables" kısmındaki "Actions" kısımlarına basıyoruz.
 * AWS hesabımıza giriyoruz ve projenin sonuna kadar kullanacağımız "Region" seçiyoruz.
 * "IAM" servisini açıp Create User kısmına basıyoruz. Bu kullanıcının "Administrator Access" yetkisine sahip olması gerekiyor çünkü AWS hesabında kaynak kullanacaktır.
@@ -38,14 +38,14 @@
 * S3 Bucket Name kısmını Terraform kaynak kodumuzun içerisinde olduğu Github Secret kısmına kaydediyoruz.Buraya kaydetmemizin sebebi S3 Bucket servisini Terraform içerisinde kullanacağız  
 * AWS Hesabımızda ECR(Elastic Container Registry) içerisinde private bir repository oluşturuyoruz ve ECR URL'mizi kopyalıyoruz.
 * ECR URL'mizi Uygulama kaynak kodumuzun içerisinde olduğu Github Secret kısmına kaydediyoruz.
-#### Şimdi ise Terraform kodlarımızın içerisine Girip VPC infrastructure ve EKS Cluster oluşturalım.
+### Şimdi ise Terraform kodlarımızın içerisine Girip VPC infrastructure ve EKS Cluster oluşturalım.
 * Terraform kaynak kodumuzun "iac-vprofile" klasörünü açıyoruz. VSCode uygulamasıyla açmamız gerekiyor.
 * terraform klasörü içerisindeki "variables.tf" dosyamızı açıyoruz. AWS hesabımızdaki region bilgisini ve terraform ile oluşturacağımız EKS Cluster adını "default" kısmında yazıyoruz.
 * Aynı şekilde terraform klasörü içerisindeki "terraform.tf" dosyamızı açıyoruz. "backend "s3"" içerisindeki "bucket" kısmına AWS Hesabımızda oluşturduğumuz S3 bucket name kısmını giriyoruz. AWS region bilgilerimizi de "region" kısmına giriyoruz. "key" kısmına dokunmuyoruz.
 * "vpc.tf" dosyamızı açıyoruz. "name" değerine EKS Cluster için belirlediğimiz ismi giriyoruz.
 * VSCode Source Control paneline gelip Projemizi "Commit & Push" seçeneğiyle Github'a push etmeliyiz.
 * Çıkan ekranda Commit mesajını yazıp "Save" seçeneğine basacağız.
-#### Şimdi ise Terraform kodlarımızı Github Actions kısmında çalıştıralım.
+### Şimdi ise Terraform kodlarımızı Github Actions kısmında çalıştıralım.
 * Terraform kaynak kodumuzun "iac-vprofie" klasörünü VScode ile açtık.
 * ".github/workflows" adında bir klasör oluşturduk.Bu klasör içinde "terraform.yml" dosyası oluşturuyoruz.Bu dosya ile github actions içerisinde terraform kodlarımızı çalıştırmış olacağız.
 * Aşağıdaki kodları "terraform.yml" dosyamıza yapıştıralım
@@ -113,7 +113,7 @@ jobs:
 * Yukarıda yapıştırdığım kod içerisindeki "AWS_REGION" kısmına S3 Bucket ve ECR bölgemizi ekliyoruz.
 * VSCode Source Control kısmından Commit&Push seçeneğine tıklıyoruz ve Commit mesajını yazdıktan sonra Save basıyoruz.
 * Github Actions kısmında Pipeline adımlarının gerçekleştiğini görmüş olacağız. 
-#### Şimdi ise Terraform kodlarımızla VPC Altyapısını ve EKS Cluster yapısını oluşturalım
+### Şimdi ise Terraform kodlarımızla VPC Altyapısını ve EKS Cluster yapısını oluşturalım
 * terraform.yml dosyanızı açıp bu içeriği ekleyin:
 * - name: Terraform Apply
          id: apple
@@ -147,7 +147,7 @@ jobs:
 * git add .
 * git commit -m "Bu bir Duzeltme mesajıdır"
 * git merge stage
-#### Şimdi ise Uygulamamızın Workflow kısmına giriş yapalım. Burada Sonar Cloud oluşturacağız,Sonar token oluşturacağız ve Github Secret ayarlarını yapacağız.
+### Şimdi ise Uygulamamızın Workflow kısmına giriş yapalım. Burada Sonar Cloud oluşturacağız,Sonar token oluşturacağız ve Github Secret ayarlarını yapacağız.
 * https://sonarcloud.io/ sitesinden Github hesabımızdan bir sonarcloud hesabı oluşturuyoruz.
 * "Create new organization" basarak manuel olarak organizasyon oluşturmamız gerekiyor. "Free Plan" seçmek bizim için yeterli olacaktır. "Analyze a new project" basıyoruz."Display name" ve "Project Key" bilgilerini aynı giriyoruz. "Public" visibility seçiyoruz.
 * Sağ yukarıdan "My account" basıyoruz."Security" basıyoruz. Burada bir tane token oluşturuyoruz.Token oluşturduktan sonra çıkan şifreyi kopyalıyoruz.Github Secret kısmında yeni bir Secret oluşturuyoruz."Name" kısmına "SONAR_TOKEN" yazdıktan sonra Token şifremizi secret kısmına giriyoruz ve add basıyoruz.
