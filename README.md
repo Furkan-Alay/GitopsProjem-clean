@@ -215,10 +215,12 @@ jobs:
 * Uygulamamızın kaynak koduna geliyoruz.Actions kısmına geliyoruz."vprofile-actions" seçeneğine basıyoruz. "Run workflow" basıyoruz.İlk başta workflow hata verecektir.Tekrardan çalıştırıyoruz ve Test işlemi bitti.
 ### Şimdi ise Docker container Build ve Publish işlemini yapalım.
 * "main.yml" dosyamızın içerisine aşağıdaki kodları yapıştırıyoruz:
-*  BUILD_AND_PUBLISH:   
+  
+  BUILD_AND_PUBLISH:   
     needs: Testing
     runs-on: ubuntu-latest
     steps:
+  
       - name: Code checkout
         uses: actions/checkout@v4
 
