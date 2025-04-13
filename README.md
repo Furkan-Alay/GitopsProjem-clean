@@ -251,4 +251,26 @@ jobs:
 * VSCode ile Uygulama kaynak kodumuzu açıyoruz."helm\vprofilecharts/templatesa/vproappdep.yml" dosyamızı açıyoruz ve bu içeriği "image: vprofile/vprofileapp" bu "image: {{ .Values.appimage}}:{{ .Values.apptag }}" içeriğe dönüştürüyoruz.
 * VSCode Source Control kısmına geliyoruz Commit&Push işlemi yapıyoruz.
 * Github Actions kısmına geliyoruz "vprofile-actions" kısmına basıyoruz ve Run Workflow basıyoruz ve workflow başlayacaktır.
-* 
+* Tüm adımlar tamamlandıktan sonra Tüm kaynaklarımız oluşmuş bir şekilde ve uygulamamız docker container içerisinde deploy edilmiş şekilde yani Uygulamamız bitmiş olacaktır.
+* Uygulamamıza erişmek için AWS Load balancer kısmına gidip DNS Adresini kopyalıyoruz ve tarayıcıya yapıştırıyoruz. Sonuç olarak uygulamamız karşımıza gelecektir.
+* İstersek DNS Adresimizi bir tane domain hizmeti satın aldıktan sonra "CNAME" kayıdı olarak tutabiliriz.Böylece kullanıcılar sitemize host adımızı yazarak erişebilecekler.
+#### Uygulamamız bittiğine göre şimdi Uygulamamızın kaynaklarının nasıl silineceğini göstermiş olacağım.
+* Tüm temizliğimiz iki adımdan oluşacaktır.Bunlardan biri Ingress Controller temizliği diğeri ise terraform destroy komutu olacaktır.
+* AWS hesabımıza giriş yaptık IAM User kısmını açtık ve oluşturduğumuz user'a tıkladık.
+* Bir tane Access ve Secret Key oluşturuyoruz.
+* Gitbash terminalimizi açıyoruz ve şu komutları yazıyoruz.
+* aws configure
+* Gerekli IAM User bilgilerinin ve region bilgilerinin girilmesi
+* rm -rf ~/.kube/config
+* aws eks update-kubeconfig --region us-east-2 --name vprofile-eks
+* Terraform uygulamamızın olduğu kaynak kodu açıyoruz.
+* cat .github/workflows/terraform.yml
+* en son satırda çıkan ve https ile başlayan linki kopyalıyoruz.
+* kubectl + delete + -f + linkimiz
+* helm uninstall vprofile-stack/
+* Aşağıdaki komutu yazdıktan sonra bize bir uyarı mesajı verecektir.Bu mesaj terraform versiyonunu değiştirmemiz ile ilgili olacaktır.Uyarıdaki versiyonu terraform.yml içerisindeki versiyonla değiştirmeliyiz.
+* terraform init -backend-config="bucket/vprofileaction5411" burada "vprofileaction5411" benim S3 Bucket adım olacaktır.Bu kısmı kendi S3 Bucket adınızla değiştiriniz.
+* Burada versiyon hatası verirse yukarıda belirtiğim gibi değiştiriğiniz ve tekrardan komutu yazınız.
+* yukarıdaki komutumuz uygulandıktan sonra son olarak aşağıdaki komutu yazınız.
+* terraform destroy
+* terraform destroy yazdıktan sonra "yes" yazmamız gerekiyor.tüm kaynakların silinmesi için 15 20 dakika beklememiz gerekiyor.
