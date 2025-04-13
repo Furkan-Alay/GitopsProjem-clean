@@ -242,3 +242,13 @@ jobs:
 * Uygulamamızın kaynak kodunun "Actions" kısmına geliyoruz."vprofile-actions" kısmına bastık "Run workflow" bastık ve projemiz başarılı ile çalıştı.
 * AWS Hesabımızın ECR Registry kısmına gelip uygulamamıza bastığımızda docker image build & publish işleminin gerçekleştiğini görebiliriz.
 ### Şimdi ise son kısım olan EKS Deploy bölümünü ayarlayacağız.
+* Windows Powershell ve Gitbash terminalinde kubernetes-helm paketini indirip kurmamız gerekiyor.
+* Uygulamamızın kaynak koduna giriş yapıyoruz.Bu komutları yazıyoruz:
+* helm create vprofilecharts
+* rm -rf vprofilecharts/templates/*
+* cp kubernetes/vpro-app/* vprofilecharts/templates/
+* cd vprofilecharts/templates/
+* VSCode ile Uygulama kaynak kodumuzu açıyoruz."helm\vprofilecharts/templatesa/vproappdep.yml" dosyamızı açıyoruz ve bu içeriği "image: vprofile/vprofileapp" bu "image: {{ .Values.appimage}}:{{ .Values.apptag }}" içeriğe dönüştürüyoruz.
+* VSCode Source Control kısmına geliyoruz Commit&Push işlemi yapıyoruz.
+* Github Actions kısmına geliyoruz "vprofile-actions" kısmına basıyoruz ve Run Workflow basıyoruz ve workflow başlayacaktır.
+* 
